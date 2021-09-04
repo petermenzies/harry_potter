@@ -35,18 +35,21 @@ wands <- hp_characters %>%
   separate(wand, into = c("wand_length", "wand_type"), sep = '"') %>% 
   filter(wand_type != "NA") %>% 
   filter(str_detect(wand_type, pattern = ",", negate = TRUE)) %>% 
-  filter(str_detect(wand_type, pattern = "Uknown", negate = TRUE)) %>% 
-  filter(str_detect(wand_type, pattern = "uknown", negate = TRUE)) %>% 
-  mutate(wand_type = trim.leading(wand_type)) %>% 
-  separate(wand_type, into = c("wand_wood", "wand_core"), sep = " ")
+  filter(str_detect(wand_type, pattern = "Unknown", negate = TRUE)) %>% 
+  filter(str_detect(wand_type, pattern = "unknown", negate = TRUE)) %>% 
+  mutate(wand_type = trim.leading(wand_type)) #%>% 
+  #separate(wand_type, into = c("wand_wood", "wand_core"), sep = " ")
   
 
 wands_numeric <- wands %>% 
   mutate(wand_length = str_replace_all(wand_length, c("¼" = ".25", "½" = ".5", "¾" = ".75"))) %>% 
   mutate(wand_length = as.numeric(wand_length))
-  
 
-wands_plot <- ggplot(wands_numeric, aes(x = name, y = wand_length)) +
+wands_main <- wands_numeric %>% 
+  filter(name %in% wands_numeric$name[c(1,2,3,4,5,6,7,9,12,13,14,17)]) 
+
+
+wands_plot <- ggplot(wands_main, aes(x = name, y = wand_length)) +
   geom_col()
 
 wands_plot
