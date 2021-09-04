@@ -1,0 +1,37 @@
+---
+title: "Harry Potter Characters"
+author: "Peter Menzies"
+date: "9/3/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+```
+
+```{r}
+hp_characters <- read_delim(here("harry_potter_characters.csv"), delim = ';', na = '')
+
+names(hp_characters)
+
+unique(hp_characters$Wand)
+
+hp_characters <- janitor::clean_names(hp_characters)
+
+wands <- hp_characters %>%
+  select(name, wand) %>%
+  filter(wand != "Unknown") %>% 
+  separate(wand, into = c("wand_length", "wand_type"), sep = '"') %>% 
+  filter(wand_type != "NA") %>% 
+  mutate(wand_length = as.numeric(wand_length))
+  
+
+wands_plot <- ggplot(wands, aes(x = name, y = wand)) +
+  geom_col()
+
+wands_plot
+
+```
+
